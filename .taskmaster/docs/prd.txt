@@ -1,0 +1,261 @@
+# Overview  
+This project involves building a comprehensive food product reformulation system with two main components: a Node.js TypeScript backend API with email notification capabilities, and an interactive React frontend that allows users to edit and manage project proposals for food product reformulation. The system will enable stakeholders to collaborate on product reformulation decisions, track approvals, and manage constraints while maintaining regulatory compliance.
+
+# Core Features  
+
+## Backend API (Node.js TypeScript)
+- RESTful API endpoints for project proposal management
+- User authentication and authorization system
+- Email notification service using SendGrid for stakeholder communications
+- Database integration for persistent storage of proposals and user data
+- Validation middleware for data integrity
+- Error handling and logging system
+- API documentation with OpenAPI/Swagger
+
+## Frontend - Editable Project Proposal Interface
+- Convert all static display components in project-proposal.tsx to editable fields
+- In-place editing for product information (name, cost, category, formulation)
+- Dynamic management of business objectives with add/remove/edit capabilities
+- Drag-and-drop priority reordering for objectives
+- Editable constraints with category organization
+- Toggle between acceptable/not acceptable changes lists
+- Stakeholder management with email invitations and approval tracking
+- Auto-save functionality with conflict resolution
+- Real-time validation and feedback
+
+## Email Integration Features
+- Automated email notifications for stakeholder invitations
+- Approval request emails with secure links
+- Status change notifications (approved, changes requested)
+- Reminder emails for pending approvals
+- Email templates with branded HTML formatting
+- Unsubscribe management and preferences
+
+# User Experience  
+
+## User Personas
+1. **Product Manager**: Creates and manages project proposals, invites stakeholders
+2. **Stakeholder**: Reviews proposals, provides feedback, approves/rejects changes
+3. **Administrator**: Manages user access, monitors system activity
+
+## Key User Flows
+1. **Creating a Proposal**: User fills out product details → Sets objectives → Defines constraints → Invites stakeholders
+2. **Editing Proposal**: Click to edit any field → Auto-save changes → See validation feedback → Track revision history
+3. **Stakeholder Approval**: Receive email → Click secure link → Review proposal → Approve/request changes → Add comments
+
+## UI/UX Considerations
+- Inline editing with clear visual indicators (hover states, edit icons)
+- Optimistic updates with rollback on errors
+- Progressive disclosure for complex sections
+- Mobile-responsive design for stakeholder reviews
+- Accessibility compliance (WCAG 2.1 AA)
+- Loading states and error handling
+
+# Technical Architecture  
+
+## System Components
+
+### Backend Architecture
+- **API Layer**: Express.js with TypeScript
+- **Authentication**: JWT-based auth with refresh tokens
+- **Database**: PostgreSQL with TypeORM/Prisma
+- **Email Service**: SendGrid integration with queue system
+- **Validation**: Zod schemas for request/response validation
+- **Testing**: Jest for unit tests, Supertest for integration tests
+
+### Frontend Architecture
+- **Framework**: Next.js with TypeScript (existing)
+- **State Management**: React Context/Zustand for proposal state
+- **Forms**: React Hook Form with Zod validation
+- **UI Components**: Extend existing shadcn/ui components
+- **API Client**: Axios/Fetch with interceptors for auth
+
+## Data Models
+
+### Proposal Model
+```
+- id: UUID
+- productName: string
+- currentCost: number
+- category: string
+- formulation: string
+- objectives: Objective[]
+- constraints: Constraint[]
+- acceptableChanges: string[]
+- notAcceptableChanges: string[]
+- feasibilityLimits: string[]
+- stakeholders: Stakeholder[]
+- createdBy: User
+- createdAt: timestamp
+- updatedAt: timestamp
+- status: enum (draft, pending_approval, approved, rejected)
+```
+
+### User Model
+```
+- id: UUID
+- email: string
+- name: string
+- role: enum (admin, product_manager, stakeholder)
+- proposals: Proposal[]
+- approvals: Approval[]
+```
+
+### Approval Model
+```
+- id: UUID
+- proposalId: UUID
+- userId: UUID
+- status: enum (pending, approved, changes_requested)
+- comments: string
+- timestamp: timestamp
+```
+
+## APIs and Integrations
+
+### REST API Endpoints
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/refresh`
+- `GET /api/proposals`
+- `POST /api/proposals`
+- `GET /api/proposals/:id`
+- `PUT /api/proposals/:id`
+- `DELETE /api/proposals/:id`
+- `POST /api/proposals/:id/stakeholders`
+- `PUT /api/proposals/:id/stakeholders/:stakeholderId`
+- `POST /api/proposals/:id/approve`
+- `POST /api/proposals/:id/request-changes`
+- `POST /api/email/send-invitation`
+- `POST /api/email/send-reminder`
+
+### SendGrid Integration
+- Transactional email templates
+- Email tracking and analytics
+- Bounce and complaint handling
+- Rate limiting and retry logic
+
+# Development Roadmap  
+
+## Phase 1: Backend Foundation
+- Set up Node.js TypeScript project structure in /api directory
+- Implement authentication system with JWT
+- Create database schema and models
+- Build core CRUD API endpoints for proposals
+- Add validation middleware
+- Implement error handling and logging
+- Create API documentation
+
+## Phase 2: Email Integration
+- Integrate SendGrid SDK
+- Create email template system
+- Implement email queue with retry logic
+- Build notification triggers for stakeholder actions
+- Add email tracking and analytics
+- Implement unsubscribe functionality
+
+## Phase 3: Frontend - Make Components Editable
+- Convert static text fields to editable inputs
+- Implement inline editing for all proposal fields
+- Add form validation with real-time feedback
+- Create auto-save functionality
+- Build undo/redo system
+- Add loading states and optimistic updates
+
+## Phase 4: Advanced Frontend Features
+- Implement drag-and-drop for priority reordering
+- Add bulk editing capabilities
+- Create revision history tracking
+- Build conflict resolution for concurrent edits
+- Add export functionality (PDF, CSV)
+- Implement keyboard shortcuts
+
+## Phase 5: Integration and Polish
+- Connect frontend to backend API
+- Implement real-time updates with WebSockets
+- Add comprehensive error handling
+- Create user onboarding flow
+- Build admin dashboard
+- Implement analytics and monitoring
+
+# Logical Dependency Chain
+
+1. **Backend API Setup** (Foundation)
+   - Project structure and TypeScript configuration
+   - Database setup and models
+   - Basic authentication
+
+2. **Core API Functionality** (Enables frontend development)
+   - CRUD operations for proposals
+   - User management endpoints
+   - Basic validation
+
+3. **Frontend Editability** (Visible progress)
+   - Convert static fields to inputs
+   - Local state management
+   - Basic form validation
+
+4. **Email Integration** (Enables collaboration)
+   - SendGrid setup
+   - Notification system
+   - Stakeholder invitations
+
+5. **Advanced Features** (Enhanced UX)
+   - Auto-save and conflict resolution
+   - Real-time updates
+   - Advanced editing features
+
+6. **Polish and Deploy** (Production ready)
+   - Error handling
+   - Performance optimization
+   - Monitoring and analytics
+
+# Risks and Mitigations  
+
+## Technical Challenges
+- **Risk**: Complex state management for concurrent editing
+- **Mitigation**: Implement optimistic locking and conflict resolution UI
+
+- **Risk**: Email deliverability issues
+- **Mitigation**: Use SendGrid best practices, implement bounce handling
+
+- **Risk**: Performance with large proposals
+- **Mitigation**: Implement pagination, lazy loading, and caching
+
+## MVP Scoping
+- **Risk**: Feature creep delaying launch
+- **Mitigation**: Focus on core edit functionality first, defer advanced features
+
+- **Risk**: Over-engineering the backend
+- **Mitigation**: Start with simple REST API, add GraphQL/WebSockets later
+
+## Resource Constraints
+- **Risk**: Limited frontend development time
+- **Mitigation**: Leverage existing shadcn/ui components, minimize custom UI
+
+- **Risk**: Complex email template management
+- **Mitigation**: Start with simple text emails, enhance with HTML later
+
+# Appendix  
+
+## Technology Stack
+- **Backend**: Node.js, TypeScript, Express.js, PostgreSQL, SendGrid
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS, shadcn/ui
+- **Testing**: Jest, React Testing Library, Cypress
+- **DevOps**: Docker, GitHub Actions, Vercel/Railway
+
+## Security Considerations
+- JWT token expiration and refresh
+- Input sanitization and validation
+- SQL injection prevention with parameterized queries
+- XSS protection with proper escaping
+- CORS configuration for API access
+- Rate limiting for API endpoints
+- Secure storage of SendGrid API keys
+
+## Performance Requirements
+- API response time < 200ms for reads
+- Email delivery within 5 minutes
+- Frontend time to interactive < 3 seconds
+- Auto-save debounced to 1 second
+- Support 100 concurrent users

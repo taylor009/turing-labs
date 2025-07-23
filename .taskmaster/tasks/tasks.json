@@ -1,0 +1,382 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Backend Project Structure",
+        "description": "Initialize Node.js TypeScript project structure with Express.js for the API backend",
+        "details": "Create a new directory '/api' and initialize a Node.js project with TypeScript support. Install necessary dependencies including Express.js, TypeScript, ts-node, nodemon, and other core packages. Configure tsconfig.json for TypeScript compilation. Set up folder structure following best practices: src/controllers, src/models, src/routes, src/middleware, src/services, src/utils, src/config. Create basic server.ts entry point with Express configuration. Set up environment variables with dotenv. Configure ESLint and Prettier for code quality.",
+        "testStrategy": "Verify project structure is correctly set up. Ensure TypeScript compilation works without errors. Test that the server starts successfully and responds to a basic health check endpoint. Validate that environment variables are properly loaded.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Setup PostgreSQL Database",
+        "description": "Configure PostgreSQL database connection and setup initial schema",
+        "details": "Install PostgreSQL client packages (pg, pg-pool). Set up database connection configuration in src/config/database.ts. Create database migration system using a tool like TypeORM or Prisma as specified in the PRD. Define connection pooling settings for optimal performance. Create initial database schema based on the data models defined in the PRD. Set up environment variables for database credentials. Implement a database initialization script that can be run during development and deployment.",
+        "testStrategy": "Test database connection with a simple query. Verify that migrations run successfully. Create unit tests for database operations. Ensure proper error handling for database connection failures.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Implement Data Models with ORM",
+        "description": "Create TypeORM/Prisma models for Proposal, User, and Approval entities",
+        "details": "Choose between TypeORM or Prisma as specified in the PRD. Define entity models for Proposal, User, and Approval following the data models specified in the PRD. Implement relationships between models (one-to-many, many-to-many). Add validation decorators for entity properties. Create indexes for frequently queried fields. Implement timestamps for created_at and updated_at. Define enum types for status fields. Create migration files for the initial schema. Add repository classes or services for database operations.",
+        "testStrategy": "Write unit tests for model validation. Test relationship queries between models. Verify that migrations correctly create the database schema. Test CRUD operations on each model.",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Implement User Authentication System",
+        "description": "Create JWT-based authentication system with registration, login, and refresh token functionality",
+        "details": "Install required packages (jsonwebtoken, bcrypt). Create authentication controller with register, login, and refresh endpoints. Implement password hashing with bcrypt. Generate JWT tokens with appropriate expiration times. Create refresh token mechanism for extended sessions. Store refresh tokens in the database with expiration. Implement middleware to verify JWT tokens on protected routes. Create user registration validation using Zod. Add logout functionality to invalidate refresh tokens. Implement password reset flow (optional for MVP).",
+        "testStrategy": "Test user registration with valid and invalid data. Verify login returns valid JWT token. Test token verification middleware. Ensure refresh token mechanism works correctly. Test token expiration and renewal. Verify password hashing is secure.",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Create Core API Routes for Proposals",
+        "description": "Implement CRUD API endpoints for proposal management",
+        "details": "Create routes for proposal management: GET /api/proposals (list), POST /api/proposals (create), GET /api/proposals/:id (read), PUT /api/proposals/:id (update), DELETE /api/proposals/:id (delete). Implement controller functions for each endpoint. Add authentication middleware to protect routes. Implement filtering, sorting, and pagination for the list endpoint. Create DTOs (Data Transfer Objects) for request/response data. Add validation using Zod schemas. Implement proper HTTP status codes and response formats. Add error handling for each endpoint.",
+        "testStrategy": "Write integration tests for each API endpoint. Test authentication and authorization rules. Verify validation works correctly for invalid inputs. Test pagination, filtering, and sorting functionality. Ensure proper error responses for various scenarios.",
+        "priority": "high",
+        "dependencies": [
+          3,
+          4
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Implement Stakeholder Management API",
+        "description": "Create API endpoints for managing stakeholders associated with proposals",
+        "details": "Implement routes for stakeholder management: POST /api/proposals/:id/stakeholders (add stakeholder), PUT /api/proposals/:id/stakeholders/:stakeholderId (update stakeholder), DELETE /api/proposals/:id/stakeholders/:stakeholderId (remove stakeholder). Create controller functions for each endpoint. Add validation for stakeholder data. Implement authorization checks to ensure only proposal owners can manage stakeholders. Create service functions to handle stakeholder business logic. Add error handling for stakeholder operations.",
+        "testStrategy": "Test adding, updating, and removing stakeholders from proposals. Verify authorization rules prevent unauthorized stakeholder management. Test validation of stakeholder data. Ensure proper error responses for various scenarios.",
+        "priority": "medium",
+        "dependencies": [
+          5
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Implement Approval Workflow API",
+        "description": "Create API endpoints for the proposal approval process",
+        "details": "Implement routes for approval workflow: POST /api/proposals/:id/approve (approve proposal), POST /api/proposals/:id/request-changes (request changes). Create controller functions for each endpoint. Add validation for approval and change request data. Implement authorization checks to ensure only invited stakeholders can approve. Create service functions to handle approval business logic. Update proposal status based on approval actions. Add comments functionality for change requests. Implement notification triggers for approval actions.",
+        "testStrategy": "Test approval and change request workflows. Verify authorization rules for stakeholder approvals. Test status updates based on approval actions. Ensure proper error responses for various scenarios. Test comment functionality for change requests.",
+        "priority": "medium",
+        "dependencies": [
+          6
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Implement SendGrid Email Integration",
+        "description": "Integrate SendGrid SDK for email notifications",
+        "details": "Install SendGrid SDK (@sendgrid/mail). Create email service module in src/services/email.ts. Configure SendGrid API key in environment variables. Implement email sending functionality with retry logic. Create queue system for email delivery using a library like Bull or a simple in-memory queue. Implement error handling and logging for email operations. Add email tracking and analytics integration. Create helper functions for common email operations. Implement rate limiting to prevent API abuse.",
+        "testStrategy": "Test email sending functionality with test API keys. Verify retry logic works for failed deliveries. Test queue system for handling multiple emails. Mock SendGrid API for unit tests. Verify error handling for various failure scenarios.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Create Email Notification Templates",
+        "description": "Develop HTML email templates for various notification types",
+        "details": "Create HTML email templates for: stakeholder invitations, approval requests, status change notifications, reminder emails. Implement a template engine like Handlebars or EJS for dynamic content. Design mobile-responsive email layouts. Add branding elements to templates. Create plain text fallback versions. Implement personalization tokens for recipient name, proposal details, etc. Create a template management system for easy updates. Add unsubscribe links and preference management. Test templates across various email clients.",
+        "testStrategy": "Test rendering of templates with various data inputs. Verify HTML validity and email client compatibility. Test personalization token replacement. Ensure mobile responsiveness of templates. Verify unsubscribe links work correctly.",
+        "priority": "medium",
+        "dependencies": [
+          8
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Implement Email Notification Service",
+        "description": "Create service for sending various types of email notifications",
+        "details": "Implement notification service with methods for: sendInvitation, sendApprovalRequest, sendStatusUpdate, sendReminder. Create email content generation functions. Implement email scheduling for reminders. Add email tracking with unique identifiers. Create bounce and complaint handling. Implement unsubscribe functionality. Add email preference management. Create logging for email events. Implement rate limiting and batching for bulk emails.",
+        "testStrategy": "Test each notification type with various scenarios. Verify email content is correctly generated. Test scheduling functionality for reminders. Verify tracking and analytics integration. Test unsubscribe and preference management. Ensure proper error handling and logging.",
+        "priority": "medium",
+        "dependencies": [
+          8,
+          9
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Implement API Validation Middleware",
+        "description": "Create validation middleware using Zod for request/response validation",
+        "details": "Install Zod validation library. Create validation schemas for all API requests. Implement middleware for request validation. Create custom error messages for validation failures. Add validation for query parameters, request body, and URL parameters. Implement validation for nested objects and arrays. Create reusable validation schemas for common data structures. Add type inference from Zod schemas for TypeScript. Implement custom validators for complex business rules.",
+        "testStrategy": "Test validation middleware with valid and invalid requests. Verify error messages are clear and helpful. Test validation of complex nested objects. Ensure proper HTTP status codes for validation errors. Test custom validators for business rules.",
+        "priority": "medium",
+        "dependencies": [
+          5
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Implement Error Handling and Logging System",
+        "description": "Create comprehensive error handling and logging system",
+        "details": "Create centralized error handling middleware. Implement custom error classes for different error types (ValidationError, AuthenticationError, etc.). Add structured logging using a library like Winston or Pino. Implement request ID tracking for correlation. Create error response formatter for consistent API responses. Add environment-based error detail levels (detailed in development, limited in production). Implement monitoring hooks for critical errors. Add performance logging for slow requests. Create log rotation and archiving.",
+        "testStrategy": "Test error handling with various error scenarios. Verify error responses have consistent format. Test logging output for different error types. Ensure sensitive information is not exposed in error responses. Test request ID correlation across logs.",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Create API Documentation with Swagger",
+        "description": "Implement OpenAPI/Swagger documentation for the API",
+        "details": "Install Swagger UI Express and swagger-jsdoc. Create OpenAPI specification for all API endpoints. Add JSDoc comments to routes and controllers. Configure Swagger UI endpoint (/api-docs). Create detailed descriptions for all endpoints, parameters, and responses. Add authentication documentation. Include example requests and responses. Create models section for data structures. Add tags for logical grouping of endpoints. Implement API versioning information.",
+        "testStrategy": "Verify Swagger UI is accessible and displays correctly. Test that all endpoints are documented. Ensure examples are valid and match actual API behavior. Verify authentication flows are correctly documented. Test API through Swagger UI interface.",
+        "priority": "low",
+        "dependencies": [
+          5,
+          6,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Setup Frontend Project Structure",
+        "description": "Configure Next.js frontend project structure and dependencies",
+        "details": "Set up Next.js project with TypeScript if not already existing. Install required dependencies: React Hook Form, Zod, Axios/Fetch, Zustand/Context API. Configure project structure: pages, components, hooks, utils, services, types. Set up API client with interceptors for authentication. Configure environment variables for API endpoints. Set up CSS framework (Tailwind CSS) and shadcn/ui components. Create basic layout components. Set up ESLint and Prettier for code quality.",
+        "testStrategy": "Verify project structure is correctly set up. Ensure TypeScript compilation works without errors. Test that the application starts successfully. Validate that environment variables are properly loaded. Test basic navigation and layout rendering.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Implement Authentication UI",
+        "description": "Create login, registration, and authentication state management",
+        "details": "Create login form component with email/password fields. Implement registration form with validation. Add authentication context/store for global auth state. Implement JWT storage in localStorage/cookies. Create protected route wrapper component. Add authentication API service. Implement token refresh logic. Create loading and error states for auth forms. Add remember me functionality. Implement logout functionality. Create password reset UI (optional for MVP).",
+        "testStrategy": "Test login and registration with valid and invalid credentials. Verify protected routes redirect unauthenticated users. Test token refresh mechanism. Ensure proper error messages for authentication failures. Test form validation for all fields.",
+        "priority": "high",
+        "dependencies": [
+          4,
+          14
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 16,
+        "title": "Convert Static Proposal Display to Editable Fields",
+        "description": "Transform existing static project-proposal.tsx components into editable fields",
+        "details": "Identify all static text fields in project-proposal.tsx. Create editable input components for text fields. Implement editable textarea components for multi-line content. Create editable number inputs for cost fields. Implement dropdown selects for category fields. Add edit mode toggle functionality. Create hover states and edit icons for editable fields. Implement inline validation for edited content. Add cancel and save buttons for edit operations. Create loading and error states for field updates.",
+        "testStrategy": "Test editing functionality for all field types. Verify validation works for invalid inputs. Test cancel and save operations. Ensure proper loading and error states. Test accessibility of editable fields. Verify mobile responsiveness of editable components.",
+        "priority": "high",
+        "dependencies": [
+          14
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 17,
+        "title": "Implement Business Objectives Management UI",
+        "description": "Create UI for adding, removing, editing, and reordering business objectives",
+        "details": "Create editable list component for business objectives. Implement add/remove functionality for objectives. Add inline editing for objective text. Implement drag-and-drop reordering using a library like react-beautiful-dnd. Create priority visualization for objectives. Add validation for objective content. Implement undo functionality for accidental deletions. Create empty state for no objectives. Add animations for list changes. Ensure mobile compatibility for touch interactions.",
+        "testStrategy": "Test adding, removing, and editing objectives. Verify drag-and-drop reordering works correctly. Test validation of objective content. Ensure proper handling of empty states. Test undo functionality. Verify mobile touch interactions work correctly.",
+        "priority": "medium",
+        "dependencies": [
+          16
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 18,
+        "title": "Implement Constraints Management UI",
+        "description": "Create UI for managing editable constraints with category organization",
+        "details": "Create editable list component for constraints. Implement category grouping for constraints. Add inline editing for constraint text. Create add/remove functionality for constraints. Implement category management (add/edit/remove). Add validation for constraint content. Create collapsible sections for categories. Implement search/filter functionality for constraints. Add empty states for categories and constraints. Ensure mobile compatibility.",
+        "testStrategy": "Test adding, removing, and editing constraints. Verify category grouping works correctly. Test validation of constraint content. Ensure proper handling of empty states. Test search/filter functionality. Verify mobile compatibility of constraint management.",
+        "priority": "medium",
+        "dependencies": [
+          16
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 19,
+        "title": "Implement Acceptable/Not Acceptable Changes UI",
+        "description": "Create toggle functionality between acceptable and not acceptable changes lists",
+        "details": "Create tabbed interface for acceptable/not acceptable changes. Implement editable list components for both change types. Add add/remove functionality for change items. Create inline editing for change text. Implement toggle mechanism between tabs. Add validation for change content. Create drag-and-drop for moving items between lists. Add empty states for both lists. Ensure mobile compatibility for touch interactions.",
+        "testStrategy": "Test adding, removing, and editing changes in both lists. Verify tab toggle works correctly. Test validation of change content. Ensure proper handling of empty states. Test drag-and-drop between lists. Verify mobile compatibility of the tabbed interface.",
+        "priority": "medium",
+        "dependencies": [
+          16
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 20,
+        "title": "Implement Stakeholder Management UI",
+        "description": "Create UI for managing stakeholders with email invitations and approval tracking",
+        "details": "Create stakeholder list component with status indicators. Implement add stakeholder form with email input. Create remove stakeholder functionality. Add resend invitation capability. Implement approval status visualization. Create stakeholder details view with comments. Add validation for stakeholder emails. Implement permission checks for stakeholder management. Create loading and error states for stakeholder operations. Ensure mobile compatibility.",
+        "testStrategy": "Test adding, removing, and resending invitations to stakeholders. Verify approval status visualization works correctly. Test validation of stakeholder emails. Ensure proper loading and error states. Test permission-based UI rendering. Verify mobile compatibility of stakeholder management.",
+        "priority": "medium",
+        "dependencies": [
+          16,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 21,
+        "title": "Implement Auto-Save Functionality",
+        "description": "Create auto-save system with conflict resolution for proposal edits",
+        "details": "Implement debounced auto-save (1 second as specified in PRD). Create optimistic updates for UI with rollback on errors. Implement dirty state tracking for form fields. Add save indicators (saving, saved, error). Create conflict detection for concurrent edits. Implement conflict resolution UI with diff visualization. Add manual save button for immediate saving. Create local storage backup for unsaved changes. Implement retry logic for failed saves. Add offline editing capability with sync on reconnect.",
+        "testStrategy": "Test auto-save timing with various edit scenarios. Verify optimistic updates and rollbacks work correctly. Test conflict detection and resolution. Ensure proper save indicators are displayed. Test manual save functionality. Verify local storage backup works for browser refresh. Test offline editing and reconnection sync.",
+        "priority": "high",
+        "dependencies": [
+          16,
+          17,
+          18,
+          19
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 22,
+        "title": "Implement Real-Time Validation and Feedback",
+        "description": "Create client-side validation system with immediate feedback",
+        "details": "Implement Zod schemas for client-side validation. Create validation hooks for form fields. Add real-time validation feedback with error messages. Implement field-level and form-level validation. Create visual indicators for validation state (success, error, warning). Add accessibility attributes for validation errors. Implement custom validation rules for business logic. Create validation summary for form submission. Add focus management for invalid fields. Ensure mobile-friendly validation messages.",
+        "testStrategy": "Test validation with valid and invalid inputs. Verify error messages are clear and helpful. Test accessibility of validation errors. Ensure proper focus management for invalid fields. Test custom validation rules for business logic. Verify mobile display of validation messages.",
+        "priority": "medium",
+        "dependencies": [
+          16,
+          17,
+          18,
+          19
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 23,
+        "title": "Implement API Integration for Frontend",
+        "description": "Connect frontend components to backend API endpoints",
+        "details": "Create API service modules for each resource type. Implement data fetching hooks with React Query or SWR. Add loading, error, and empty states for data fetching. Implement optimistic updates for mutations. Create retry logic for failed requests. Add request cancellation for unmounted components. Implement pagination, filtering, and sorting for list views. Create caching strategy for frequently accessed data. Add offline support with background synchronization. Implement real-time updates with WebSockets (optional for MVP).",
+        "testStrategy": "Test data fetching with various network conditions. Verify loading, error, and empty states are displayed correctly. Test optimistic updates and rollbacks. Ensure proper caching behavior. Test pagination, filtering, and sorting. Verify offline support works correctly. Test WebSocket real-time updates if implemented.",
+        "priority": "high",
+        "dependencies": [
+          5,
+          6,
+          7,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 24,
+        "title": "Implement Comprehensive Testing Suite",
+        "description": "Create testing infrastructure and write tests for both backend and frontend",
+        "details": "Set up Jest for backend unit and integration tests. Configure React Testing Library for frontend component tests. Add Cypress for end-to-end testing. Create test utilities and mocks. Implement API mocking for frontend tests. Add database seeding for backend tests. Create test coverage reporting. Implement CI integration for automated testing. Add performance testing for critical paths. Create accessibility testing with axe-core or similar.",
+        "testStrategy": "Verify test infrastructure works correctly. Ensure test coverage meets targets (suggest 80%+). Test CI integration for automated test runs. Verify accessibility tests catch common issues. Ensure performance tests identify bottlenecks. Test database seeding and cleanup for backend tests.",
+        "priority": "medium",
+        "dependencies": [
+          5,
+          6,
+          7,
+          16,
+          17,
+          18,
+          19,
+          20,
+          23
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 25,
+        "title": "Implement Deployment Pipeline",
+        "description": "Create deployment infrastructure for backend and frontend",
+        "details": "Set up Docker containerization for backend. Create docker-compose for local development. Configure GitHub Actions for CI/CD. Set up staging and production environments. Implement database migration process for deployments. Create environment-specific configuration. Add monitoring and error tracking (Sentry, LogRocket). Implement performance monitoring. Create backup and restore procedures. Add security scanning in CI pipeline. Configure SSL/TLS for all environments.",
+        "testStrategy": "Test Docker builds for backend. Verify CI/CD pipeline correctly deploys changes. Test database migrations in staging environment. Ensure monitoring and error tracking is functional. Verify backup and restore procedures work correctly. Test security scanning catches vulnerabilities. Ensure SSL/TLS is properly configured.",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-07-22T17:35:22.277Z",
+      "updated": "2025-07-22T22:03:48.157Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
